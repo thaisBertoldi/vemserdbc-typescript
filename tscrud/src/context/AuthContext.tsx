@@ -9,6 +9,7 @@ const AuthProvider: FC<any> = ({children}) => {
     const navigate = useNavigate()
 
     const [token, setToken] = useState<string>('')
+    const [login, setLogin] = useState<boolean>(false)
 
     const handleLogin = async (user:LoginDTO) => {
         try {
@@ -16,6 +17,7 @@ const AuthProvider: FC<any> = ({children}) => {
           setToken(data)
           localStorage.setItem('token', data)
           api.defaults.headers.common['Authorization'] = data;
+          setLogin(true)
           navigate('/')
         } catch (error) {
             console.log(error)
@@ -26,10 +28,11 @@ const AuthProvider: FC<any> = ({children}) => {
     const handleLogout = () => {
         localStorage.removeItem('token');
         navigate('/login')
+        setLogin(false)
     }
 
     return (
-        <AuthContext.Provider value={{handleLogin, token, handleLogout}}>
+        <AuthContext.Provider value={{handleLogin, token, handleLogout, login}}>
         {children}
         </AuthContext.Provider>
     )

@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Card, Container, CardTitle } from "./Home.styles"
 
 function Home() {
@@ -15,10 +15,10 @@ function Home() {
   return (
     <Container>
       <Card>
-        <CardTitle>Users</CardTitle>
+        <CardTitle><Link to='/users'>Users</Link></CardTitle>
       </Card>
       <Card>
-        <CardTitle>Address</CardTitle>
+        <CardTitle><Link to='/address'>Address</Link></CardTitle>
       </Card>
     </Container>
   )

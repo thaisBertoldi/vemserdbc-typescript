@@ -2,12 +2,13 @@ import React, { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
 function Header() {
-  const { handleLogout } = useContext<any>(AuthContext);
+  const { handleLogout, login } = useContext<any>(AuthContext);
 
   return (
     <>
       <div>Header</div>
-      <button onClick={handleLogout}>Logout</button>
+      {login && 
+      <button onClick={handleLogout}>Logout</button>}
     </>
   );
 }
