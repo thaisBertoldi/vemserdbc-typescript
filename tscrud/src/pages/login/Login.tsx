@@ -1,11 +1,21 @@
 import {Formik, Field, Form, FormikHelpers} from 'formik'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { LoginDTO } from '../../model/LoginDTO'
 import { LoginTitle, ContainerLogin, LoginForm } from './Login.styles'
 import { AuthContext } from '../../context/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 function Login() {
   const { handleLogin } = useContext<any>(AuthContext);
+  const getToken = localStorage.getItem('token')
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if(getToken){
+    navigate('/')
+    alert('Você já está logado. Faça logout para acessar com outra conta.')
+  }
+  }, [])
 
   return (
     <ContainerLogin>
