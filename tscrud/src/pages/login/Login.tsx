@@ -19,7 +19,7 @@ import {
 } from "./Login.styles";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import logoVemSer from "../../images/logo-vemser.png";
+// import logoVemSer from "../../images/logo-vemser.png";
 
 function Login() {
   const { handleLogin } = useContext<any>(AuthContext);
@@ -50,7 +50,7 @@ function Login() {
     <ContainerLogin>
       <ContainerInterno>
         <DivWhitSpan>
-          <ImageLogo src={logoVemSer} alt="logo vemSer dbc" />
+          <ImageLogo />
           <SpanLogo>Dashboard Kit</SpanLogo>
         </DivWhitSpan>
         <DivWhitSpan>

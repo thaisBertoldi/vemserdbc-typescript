@@ -7,20 +7,26 @@ import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import NotFound from "./pages/notFound/NotFound";
 import Users from "./pages/users/Users";
+import UserContext from "./context/UserContext";
+import { ContainerAllPage } from "./Routes.styles";
 
 function Routers() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/address" element={<Address />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <Footer />
+        <UserContext>
+          <ContainerAllPage>
+            <Header />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/users" element={<Users />} />
+              <Route path="/address" element={<Address />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </ContainerAllPage>
+          {/* <Footer /> */}
+        </UserContext>
       </AuthProvider>
     </BrowserRouter>
   );

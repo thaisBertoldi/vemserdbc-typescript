@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import logoVemSer from "../../images/logo-vemser.png";
 
 export const ContainerLogin = styled.div`
   background-color: #363740;
@@ -7,6 +8,7 @@ export const ContainerLogin = styled.div`
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  min-width: 100%;
 `;
 
 export const ContainerInterno = styled.div`
@@ -45,7 +47,7 @@ export const LoginForm = styled.input`
   border-radius: 8px;
 `;
 
-export const ImageLogo = styled.img`
+export const ImageLogo = styled.img.attrs(props => ({src: logoVemSer, alt: "logo vemSer dbc"}))`
   height: 100px;
   width: 100px;
 `;
