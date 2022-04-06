@@ -1,8 +1,15 @@
-import React from 'react'
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 function Footer() {
+  const { isToken } = useContext<any>(AuthContext);
+
   return (
-    <div>Footer</div>
+    <footer>
+      {isToken &&
+      <h1>Footer</h1>
+      }
+    </footer>
   )
 }
 

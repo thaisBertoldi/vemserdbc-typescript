@@ -1,16 +1,7 @@
-import { useEffect } from "react"
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Card, Container, CardTitle } from "./Home.styles"
 
 function Home() {
-  const getToken = localStorage.getItem('token')
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    if(!getToken){
-    navigate('/login')
-  }
-  }, [])
 
   return (
     <Container>

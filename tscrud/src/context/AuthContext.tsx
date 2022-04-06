@@ -1,41 +1,57 @@
-import {FC, createContext, useState } from "react";
-import {useNavigate} from 'react-router-dom'
+import { FC, createContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api";
 import { LoginDTO } from "../model/LoginDTO";
 
 export const AuthContext = createContext({});
 
-const AuthProvider: FC<any> = ({children}) => {
-    const navigate = useNavigate()
+const AuthProvider: FC<any> = ({ children }) => {
+  const navigate = useNavigate();
 
-    const [token, setToken] = useState<string>('')
-    const [login, setLogin] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState(false);
+  const [isToken, setIsToken] = useState(false);
 
-    const handleLogin = async (user:LoginDTO) => {
-        try {
-          const {data} = await api.post('/auth', user)
-          setToken(data)
-          localStorage.setItem('token', data)
-          api.defaults.headers.common['Authorization'] = data;
-          setLogin(true)
-          navigate('/')
-        } catch (error) {
-            console.log(error)
-        }
-        
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (token){
+      setIsToken(true)
+    } else {
+      navigate('/login')
     }
+    setLoading(false)
+  }, []);
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        navigate('/login')
-        setLogin(false)
+  const handleLogin = async (user: LoginDTO) => {
+    try {
+      const { data } = await api.post("/auth", user);
+      localStorage.setItem("token", data);
+      api.defaults.headers.common["Authorization"] = data;
+      setIsToken(true);
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+      setError(true);
     }
+  };
 
-    return (
-        <AuthContext.Provider value={{handleLogin, token, handleLogout, login}}>
-        {children}
-        </AuthContext.Provider>
-    )
-}
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsToken(false)
+    navigate("/login");
+  };
 
-export default AuthProvider
+  if (loading) {
+    return <h1>Loading</h1>;
+  }
+  if (error) {
+    return <h1>Error</h1>;
+  }
+  return (
+    <AuthContext.Provider value={{ handleLogin, handleLogout, isToken }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export default AuthProvider;

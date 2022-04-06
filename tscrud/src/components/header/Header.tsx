@@ -1,15 +1,22 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import Logo from "./Logo";
+import Menu from "./Menu";
 
 function Header() {
-  const { handleLogout, login } = useContext<any>(AuthContext);
+  const { handleLogout, isToken } = useContext<any>(AuthContext);
+
 
   return (
-    <>
-      <div>Header</div>
-      {login && 
-      <button onClick={handleLogout}>Logout</button>}
-    </>
+    <header>
+      {isToken && (
+        <>
+          <Logo />
+          <Menu />
+          <button onClick={handleLogout}>Logout</button>
+        </>
+      )}
+    </header>
   );
 }
 
