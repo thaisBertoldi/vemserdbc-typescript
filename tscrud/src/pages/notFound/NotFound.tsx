@@ -1,8 +1,12 @@
-import React from 'react'
+import image from '../../images/image-notfound.gif'
+import { ContainerNotFound } from './NotFound.styles'
 
 function NotFound() {
   return (
-    <div>NotFound</div>
+    <ContainerNotFound>
+      <h3>I think you confused Simon. Return to home page</h3>
+      <img src={image} alt='Simon the cat' />
+    </ContainerNotFound>
   )
 }
 

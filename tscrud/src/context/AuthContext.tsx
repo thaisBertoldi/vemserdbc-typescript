@@ -1,6 +1,8 @@
 import { FC, createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
+import Error from "../components/error/Error";
+import Loading from "../components/loading/Loading";
 import { LoginDTO } from "../model/LoginDTO";
 
 export const AuthContext = createContext({});
@@ -42,10 +44,10 @@ const AuthProvider: FC<any> = ({ children }) => {
   };
 
   if (loading) {
-    return <h1>Loading</h1>;
+    return <Loading />;
   }
   if (error) {
-    return <h1>Error</h1>;
+    return <Error />;
   }
   return (
     <AuthContext.Provider value={{ handleLogin, handleLogout, isToken }}>
