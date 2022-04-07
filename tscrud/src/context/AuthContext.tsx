@@ -1,4 +1,4 @@
-import { FC, createContext, useState, useEffect } from "react";
+import { FC, createContext, useState, useEffect, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
 import Error from "../components/error/Error";
@@ -7,7 +7,7 @@ import { LoginDTO } from "../model/LoginDTO";
 
 export const AuthContext = createContext({});
 
-const AuthProvider: FC<any> = ({ children }) => {
+const AuthProvider: FC<ReactNode> = ({ children }) => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState<boolean>(true);

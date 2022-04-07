@@ -1,11 +1,10 @@
 import moment from "moment";
-import { FC } from "react";
 import { UsersDTO } from "../../model/UsersDTO";
 import { ListUsers } from "./Users.styles";
 
 function List({ users }: UsersDTO) {
 
-  const formatarCPF: FC<any> = (cpf) => {
+  const formatarCPF = (cpf: string) => {
     return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4")
   }
 
