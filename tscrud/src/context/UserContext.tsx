@@ -4,7 +4,6 @@ import { UsersDTO } from "../model/UsersDTO";
 import Notiflix from 'notiflix';
 import { NewUserDTO } from "../model/NewUserDTO";
 
-
 export const UserContext = createContext({});
 
 const UserProvider: FC<ReactNode> = ({children}) => {

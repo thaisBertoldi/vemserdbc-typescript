@@ -1,5 +1,6 @@
 import axios from "axios";
-import { createContext, FC, ReactNode, useEffect, useState } from "react";
+import { createContext, FC, ReactNode, useState } from "react";
+import Notiflix from 'notiflix';
 import api from "../api";
 import { ViaCEPDTO } from "../model/AddressDTO";
 
@@ -34,12 +35,13 @@ const AddressProvider: FC<ReactNode> = ({ children }) => {
       pais: values.pais,
       tipo: values.tipo,
     };
-    console.log(addressApi)
     try {
       const { data } = await api.post("/endereco/662", addressApi);
-      console.log(data);
+      Notiflix.Notify.success('Endereço criado com sucesso!');
+      returnAddress()
     } catch (error) {
       console.log("Erro ao tentar criar endereço na api.", error);
+      Notiflix.Notify.failure('Sinto muito, mas nao foi possivel criar esse endereço.');
     }
   }
 
@@ -57,7 +59,29 @@ const AddressProvider: FC<ReactNode> = ({ children }) => {
   }
 
   async function deleteAddress(id: number){
-    console.log(id)
+    Notiflix.Confirm.show(
+      'Alerta de Confirmação',
+      'Tem certeza que deseja apagar esse endereço?',
+      'Yes',
+      'No',
+      async function okCb() {
+          try {
+              await api.delete(`/endereco/${id}`)
+              returnAddress()
+              Notiflix.Notify.success('Você excluiu esse endereço.');
+          } catch (error) {
+              Notiflix.Notify.failure('Sinto muito, mas nao foi possivel excluir esse endereço.');
+              console.log(error)
+          }  
+      },
+      function cancelCb() {
+          Notiflix.Notify.failure('Só pra testar né?');
+      },
+      {
+        width: '320px',
+        borderRadius: '8px',
+      },
+    );
   }
 
   return (
