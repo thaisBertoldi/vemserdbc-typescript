@@ -22,14 +22,16 @@ export const ContainerList = styled.div`
 
 export const ListUsers = styled.div`
     display: grid;
-    grid-template-columns: 40% 20% 20% 20%;
+    grid-template-columns: 20% 10% 10% 20% 10% 10%;
     border-top: 1px #DFE0EB solid;
+    gap: 45px;
 `;
 
 export const TableUsers = styled.table`
     display: grid;
-    grid-template-columns: 40% 20% 20% 20%;
+    grid-template-columns: 20% 10% 10% 20% 10% 10%;
     opacity: 0.5;
+    gap: 45px;
 `;
 
 export const AllUsersTitle = styled.h3`

@@ -3,7 +3,7 @@ import logoVemSer from "../../images/logo-vemser.png";
 
 export const ContainerHeader = styled.header`
   background-color: #363740;
-  width: 15%;
+  min-width: 15%;
 `;
 
 export const HeaderLogo = styled.div`
