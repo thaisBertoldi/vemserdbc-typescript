@@ -2,6 +2,7 @@ import { createContext, FC, ReactNode, useState } from "react";
 import api from "../api";
 import { UsersDTO } from "../model/UsersDTO";
 import Notiflix from 'notiflix';
+import { NewUserDTO } from "../model/NewUserDTO";
 
 
 export const UserContext = createContext({});
@@ -20,6 +21,17 @@ const UserProvider: FC<ReactNode> = ({children}) => {
             console.log(error)
             setLoading(false)
             setError(true)
+        }
+    }
+
+    const createUser = async (values: NewUserDTO) => {
+        try {
+            const {data} = await api.post('/pessoa', values)
+            Notiflix.Notify.success('Contato criado com sucesso!');
+            getUsers()
+        } catch (error) {
+            console.log('Algo de errado nao esta certo no createUser', error)
+            Notiflix.Notify.failure('Sinto muito, mas nao foi possivel criar esse contato.');
         }
     }
 
@@ -54,7 +66,7 @@ const UserProvider: FC<ReactNode> = ({children}) => {
     }
 
     return (
-        <UserContext.Provider value={{getUsers, user, loading, setLoading, error, setError, updateUser, deleteUser}}>
+        <UserContext.Provider value={{getUsers, user, loading, setLoading, error, setError, updateUser, deleteUser, createUser}}>
             {children}
         </UserContext.Provider>
     )
