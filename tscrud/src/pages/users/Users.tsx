@@ -5,11 +5,13 @@ import Error from "../../components/error/Error";
 import Loading from "../../components/loading/Loading";
 import { UserContext } from "../../context/UserContext";
 import { NewUserDTO } from "../../model/NewUserDTO";
+import { ButtonAddress } from "../address/Address.styles";
 import List from "./List";
 import {
   AllUsersTitle,
   ContainerList,
   ContainerPageUsers,
+  FormNewUser,
   TableUsers,
 } from "./Users.styles";
 
@@ -44,9 +46,10 @@ function Users() {
       >
         {(props) => (
           <Form>
+            <FormNewUser>
             <div>
               <label htmlFor="nome">Nome:</label>
-              <Field id="nome" name="nome" placeholder="Digite seu nome" />
+              <Field id="nome" name="nome" placeholder="Name" />
             </div>
 
             <div>
@@ -54,7 +57,7 @@ function Users() {
               <Field
                 id="email"
                 name="email"
-                placeholder="Digite seu email"
+                placeholder="youremail@email.com"
                 type="email"
               />
             </div>
@@ -64,27 +67,28 @@ function Users() {
               <Field
                 id="dataNascimento"
                 name="dataNascimento"
-                placeholder="Digite sua data de nascimento"
+                placeholder="0000-00-00"
               />
             </div>
 
             <div>
               <label htmlFor="cpf">CPF:</label>
-              <Field id="cpf" name="cpf" placeholder="Digite seu cpf" />
+              <Field id="cpf" name="cpf" placeholder="000.000.000-00" />
             </div>
 
             <div>
-              <button type="submit">Cadastrar</button>
+              <ButtonAddress type="submit" color={"#29CC97"}>Cadastrar</ButtonAddress>
             </div>
+            </FormNewUser>
           </Form>
         )}
       </Formik>
         <AllUsersTitle>All users</AllUsersTitle>
         <TableUsers>
-          <td>Name User</td>
-          <td>Birthday</td>
-          <td>Cpf</td>
-          <td>Email</td>
+          <p>Name User</p>
+          <p>Birthday</p>
+          <p>Cpf</p>
+          <p>Email</p>
         </TableUsers>
         {loading && <Loading />}
         {!loading && <List users={user} />}
