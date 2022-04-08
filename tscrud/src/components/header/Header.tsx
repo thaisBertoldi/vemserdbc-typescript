@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { Button } from "../../pages/AllPages.styles";
 import {
-  ButtonLogout,
   ContainerHeader,
   HeaderButton,
   HeaderLogo,
@@ -13,9 +13,11 @@ import Menu from "./Menu";
 function Header() {
   const { handleLogout, isToken } = useContext<any>(AuthContext);
 
-  return (
-    <ContainerHeader>
-      {isToken && (
+  if(isToken) {
+    return (
+     
+      <ContainerHeader>
+      
         <div>
           <HeaderLogo>
             <Logo />
@@ -24,12 +26,17 @@ function Header() {
             <Menu />
           </HeaderMenu>
           <HeaderButton>
-            <ButtonLogout onClick={handleLogout}>Logout</ButtonLogout>
+            <Button onClick={handleLogout} color='#3751FF'>Logout</Button>
           </HeaderButton>
         </div>
-      )}
+      )
     </ContainerHeader>
-  );
+  )};
+  return (
+    <header>
+      
+    </header>
+  )
 }
 
 export default Header;

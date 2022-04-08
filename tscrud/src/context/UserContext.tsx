@@ -3,6 +3,7 @@ import api from "../api";
 import { UsersDTO } from "../model/UsersDTO";
 import Notiflix from 'notiflix';
 import { NewUserDTO } from "../model/NewUserDTO";
+import moment from "moment";
 
 export const UserContext = createContext({});
 
@@ -24,6 +25,9 @@ const UserProvider: FC<ReactNode> = ({children}) => {
     }
 
     const createUser = async (values: NewUserDTO) => {
+        values.dataNascimento = moment(values.dataNascimento, "DD/MM/YYYY").format("YYYY-MM-DD")
+        values.cpf = values.cpf.replaceAll('.', '').replaceAll('-', '')
+        console.log(values)
         try {
             const {data} = await api.post('/pessoa', values)
             Notiflix.Notify.success('Contato criado com sucesso!');

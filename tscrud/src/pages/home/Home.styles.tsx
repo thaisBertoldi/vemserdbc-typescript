@@ -1,21 +1,30 @@
 import styled from 'styled-components';
-
-export const Container = styled.div`
-    display: flex;
-    background-color: #eee;
-    min-height: 100vh;
-    min-width: 100vh;
-`;
+import { Link } from 'react-router-dom'
 
 export const Card = styled.div`
     background-color: #fff;
     border-radius: 10px;
-    border: 1px #000 solid;
-    width: 150px;
-    height: 100px;
+    border: 1px gray solid;
+    width: 250px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;  
 `;
 
-export const CardTitle = styled.h1`
+export const CardTitle = styled.p`
     color: #333;
-    font: 40px;
+    font-size: 20px;
+    text-align: center;
+    opacity: 0.7;
+`;
+
+export const PNumber = styled.h2`
+    color: #333;
+    font-size: 40px;
+    text-align: center;
+`
+
+export const LinkHome = styled(Link)`
+    text-decoration: none;
 `;

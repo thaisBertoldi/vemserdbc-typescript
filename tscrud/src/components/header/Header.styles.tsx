@@ -22,16 +22,8 @@ export const LogoImg = styled.img.attrs((props) => ({
   src: logoVemSer,
   alt: "logo vemSer dbc",
 }))`
-  height: 100px;
-  width: 100px;
-`;
-
-export const ButtonLogout = styled.button`
-    background-color: #3751FF;
-    color: #FFFFFF;
-    width: 150px;
-    height: 35px;
-    border-radius: 8px;
+  height: 150px;
+  width: 150px;
 `;
 
 export const HeaderMenu = styled.div`

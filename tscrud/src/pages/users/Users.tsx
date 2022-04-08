@@ -1,16 +1,18 @@
 import { Field, Form, Formik } from "formik";
 import { useContext, useEffect} from "react";
+import InputMask from "react-input-mask";
+import * as Yup from "yup";
 import api from "../../api";
 import Error from "../../components/error/Error";
 import Loading from "../../components/loading/Loading";
 import { UserContext } from "../../context/UserContext";
 import { NewUserDTO } from "../../model/NewUserDTO";
-import { ButtonAddress } from "../address/Address.styles";
+import { AlertErrorInput } from "../address/Address.styles";
+import { Button, Container, ContainerInterno } from "../AllPages.styles";
 import List from "./List";
 import {
   AllUsersTitle,
-  ContainerList,
-  ContainerPageUsers,
+  DivLabelField,
   FormNewUser,
   TableUsers,
 } from "./Users.styles";
@@ -26,12 +28,25 @@ function Users() {
     getUsers();
   }, []);
 
-  if (error) {
-    return <Error />;
-  }
+
+  const SignupSchema = Yup.object().shape({
+    nome: Yup.string()
+      .min(2, "muito curto")
+      .max(50, "muito longo")
+      .required("Você precisa preencher esse campo"),
+    email: Yup.string()
+      .email('Este campo precisa ser preenchido com um email.')
+      .required("Você precisa preencher esse campo"),
+    dataNascimento: Yup.string()
+      .required("Você precisa preencher esse campo"),
+    cpf: Yup.string()
+      .required("Você precisa preencher esse campo"),
+  });
+
+  
   return (
-    <ContainerPageUsers>
-      <ContainerList>
+    <Container>
+      <ContainerInterno>
         <h3>Cadastrar novo usuário:</h3>
       <Formik
         initialValues={{
@@ -40,6 +55,7 @@ function Users() {
           dataNascimento: '',
           cpf: '',
         }}
+        validationSchema={SignupSchema}
         onSubmit={async (values: NewUserDTO) => {
           createUser(values)
         }}
@@ -47,12 +63,16 @@ function Users() {
         {(props) => (
           <Form>
             <FormNewUser>
-            <div>
+            <DivLabelField>
               <label htmlFor="nome">Nome:</label>
               <Field id="nome" name="nome" placeholder="Name" />
-            </div>
+              {props.errors.nome && props.touched.nome ? (
+                      <AlertErrorInput>{props.errors.nome}</AlertErrorInput>
+                    ) : null}
 
-            <div>
+            </DivLabelField>
+
+            <DivLabelField>
               <label htmlFor="email">Email:</label>
               <Field
                 id="email"
@@ -60,25 +80,41 @@ function Users() {
                 placeholder="youremail@email.com"
                 type="email"
               />
-            </div>
+               {props.errors.email && props.touched.email ? (
+                      <AlertErrorInput>{props.errors.email}</AlertErrorInput>
+                    ) : null}
 
-            <div>
+            </DivLabelField>
+
+            <DivLabelField>
               <label htmlFor="dataNascimento">Data de nascimento:</label>
               <Field
+                as={InputMask} mask="99/99/9999"
                 id="dataNascimento"
                 name="dataNascimento"
-                placeholder="0000-00-00"
+                placeholder="00/00/0000"
               />
-            </div>
+               {props.errors.dataNascimento && props.touched.dataNascimento ? (
+                      <AlertErrorInput>{props.errors.dataNascimento}</AlertErrorInput>
+                    ) : null}
 
-            <div>
+            </DivLabelField>
+
+            <DivLabelField>
               <label htmlFor="cpf">CPF:</label>
-              <Field id="cpf" name="cpf" placeholder="000.000.000-00" />
-            </div>
+              <Field 
+              as={InputMask} mask="999.999.999-99"
+              id="cpf" 
+              name="cpf" 
+              placeholder="000.000.000-00" />
+              {props.errors.cpf && props.touched.cpf ? (
+                      <AlertErrorInput>{props.errors.cpf}</AlertErrorInput>
+                    ) : null}
+            </DivLabelField>
 
-            <div>
-              <ButtonAddress type="submit" color={"#29CC97"}>Cadastrar</ButtonAddress>
-            </div>
+            <DivLabelField>
+              <Button type="submit" color={"#29CC97"}>Cadastrar</Button>
+            </DivLabelField>
             </FormNewUser>
           </Form>
         )}
@@ -91,9 +127,10 @@ function Users() {
           <p>Email</p>
         </TableUsers>
         {loading && <Loading />}
-        {!loading && <List users={user} />}
-      </ContainerList>
-    </ContainerPageUsers>
+        {error && <Error />}
+        {!loading && !error && <List users={user} />}
+      </ContainerInterno>
+    </Container>
   );
 }
 

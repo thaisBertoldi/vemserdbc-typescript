@@ -8,9 +8,6 @@ import { ViaCEPDTO } from "../../model/AddressDTO";
 import {
   AlertErrorInput,
   AllFormAddress,
-  ButtonAddress,
-  ContainerAddress,
-  ContainerPageAddress,
   FormAddress,
   Input,
   LabelInput,
@@ -18,6 +15,7 @@ import {
   Select,
   TableAddress,
 } from "./Address.styles";
+import { Button, Container, ContainerInterno } from "../AllPages.styles";
 
 function Address() {
   const {
@@ -75,8 +73,8 @@ function Address() {
   });
 
   return (
-    <ContainerPageAddress>
-      <ContainerAddress>
+    <Container>
+      <ContainerInterno>
         <h3>Adicionar novo endereço:</h3>
         <Formik
           initialValues={{
@@ -99,7 +97,7 @@ function Address() {
             setSubmitting(false);
           }}
         >
-          {(props: FormikProps<any>) => (
+          {(props) => (
             <Form>
               <AllFormAddress>
                 <FormAddress>
@@ -110,7 +108,7 @@ function Address() {
                       <AlertErrorInput>{props.errors.cep}</AlertErrorInput>
                     ) : null}
 
-                    <ButtonAddress
+                    <Button
                       type="button"
                       color={"gray"}
                       onClick={() =>
@@ -118,7 +116,7 @@ function Address() {
                       }
                     >
                       Buscar CEP
-                    </ButtonAddress>
+                    </Button>
                   </LabelInput>
                 </FormAddress>
 
@@ -211,9 +209,9 @@ function Address() {
 
                 <FormAddress>
                   <LabelInput>
-                    <ButtonAddress type="submit" color={"#29CC97"}>
+                    <Button type="submit" color={"#29CC97"}>
                       Cadastrar
-                    </ButtonAddress>
+                    </Button>
                   </LabelInput>
                 </FormAddress>
               </AllFormAddress>
@@ -238,25 +236,25 @@ function Address() {
               <p>{add.cidade}</p>
               <p>{add.estado}</p>
               <p>{add.pais}</p>
-              <ButtonAddress
+              <Button
                 type="button"
                 color={"green"}
                 onClick={() => updateAddress(add.idEndereco)}
               >
                 Atualizar
-              </ButtonAddress>
-              <ButtonAddress
+              </Button>
+              <Button
                 type="button"
                 color={"red"}
                 onClick={() => deleteAddress(add.idEndereco)}
               >
                 Deletar
-              </ButtonAddress>
+              </Button>
             </ListAddress>
           ))}
         </div>
-      </ContainerAddress>
-    </ContainerPageAddress>
+      </ContainerInterno>
+    </Container>
   );
 }
 

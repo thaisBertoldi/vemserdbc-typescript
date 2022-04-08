@@ -2,7 +2,7 @@ import moment from "moment";
 import { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
 import { UsersDTO } from "../../model/UsersDTO";
-import { ButtonAddress } from "../address/Address.styles";
+import { Button } from "../AllPages.styles";
 import { ListUsers } from "./Users.styles";
 
 function List({ users }: UsersDTO) {
@@ -27,8 +27,8 @@ function List({ users }: UsersDTO) {
           <div>
             <p>{u.email}</p>
           </div>
-          <ButtonAddress type='button' color={'green'} onClick={() => updateUser(u.idPessoa)}>Atualizar</ButtonAddress>
-            <ButtonAddress type='button' color={'red'} onClick={() => deleteUser(u.idPessoa)}>Deletar</ButtonAddress>
+          <Button type='button' color={'green'} onClick={() => updateUser(u.idPessoa)}>Atualizar</Button>
+            <Button type='button' color={'red'} onClick={() => deleteUser(u.idPessoa)}>Deletar</Button>
         </ListUsers>
       ))}
     </>

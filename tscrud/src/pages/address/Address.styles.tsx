@@ -1,27 +1,5 @@
 import styled from "styled-components";
 
-export const ContainerPageAddress = styled.div`
-  @import url("https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,400;0,700;1,400&display=swap");
-  font-family: Mulish, sans-serif;
-  background-color: #e5e5e5;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-width: 85%;
-`;
-
-export const ContainerAddress = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 1122px;
-  margin-top: 128px;
-  margin-left: 60px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 15px;
-`;
-
 export const TableAddress = styled.div`
   display: grid;
   grid-template-columns: 20% 11% 11% 11% 11% 11%;
@@ -35,15 +13,6 @@ export const ListAddress = styled.div`
   align-items: center;
   gap: 10px;
   border-top: 1px #dfe0eb solid;
-`;
-
-export const ButtonAddress = styled.button`
-  background-color: ${(props) => props.color};
-  color: #ffffff;
-  width: 100px;
-  height: 35px;
-  border-radius: 8px;
-  cursor: pointer;
 `;
 
 export const AllFormAddress = styled.div`
