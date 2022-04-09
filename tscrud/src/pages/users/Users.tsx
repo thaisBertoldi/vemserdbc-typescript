@@ -1,27 +1,35 @@
-import { Field, Form, Formik } from "formik";
-import { useContext, useEffect } from "react";
-
+import { useFormik } from "formik";
+import moment from "moment";
+import Notiflix from "notiflix";
+import { useContext, useEffect, useState } from "react";
+import InputMask from "react-input-mask";
 import * as Yup from "yup";
 import api from "../../api";
 import Error from "../../components/error/Error";
 import Loading from "../../components/loading/Loading";
 import { UserContext } from "../../context/UserContext";
 import { NewUserDTO } from "../../model/NewUserDTO";
+import { UsersDTO } from "../../model/UsersDTO";
 import { AlertErrorInput } from "../address/Address.styles";
 import { Button, Container, ContainerInterno } from "../AllPages.styles";
-import List from "./List";
 import {
   AllUsersTitle,
+  DivButtons,
   DivLabelField,
   FormNewUser,
-  InputWithMask,
+  Input,
+  ListUsers,
   TableUsers,
 } from "./Users.styles";
 
 function Users() {
-  const { user, getUsers, loading, error, createUser } =
-    useContext<any>(UserContext);
+  const [idUser, setIdUser] = useState<number | null>();
+  const { user, getUsers, loading, error, deleteUser } = useContext<any>(UserContext);
   const getToken = localStorage.getItem("token");
+
+  const formatarCPF = (cpf: string) => {
+    return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+  };
 
   useEffect(() => {
     if (getToken) {
@@ -30,114 +38,213 @@ function Users() {
     getUsers();
   }, []);
 
-  const SignupSchema = Yup.object().shape({
-    nome: Yup.string()
-      .min(2, "muito curto")
-      .max(50, "muito longo")
-      .required("Você precisa preencher esse campo"),
-    email: Yup.string()
-      .email("Este campo precisa ser preenchido com um email.")
-      .required("Você precisa preencher esse campo"),
-    dataNascimento: Yup.string().required("Você precisa preencher esse campo"),
-    cpf: Yup.string().required("Você precisa preencher esse campo"),
+  const createUser = async (values: NewUserDTO) => {
+    values.dataNascimento = moment(values.dataNascimento, "DD/MM/YYYY").format(
+      "YYYY-MM-DD"
+    );
+    values.cpf = values.cpf.replaceAll(".", "").replaceAll("-", "");
+    try {
+      const { data } = await api.post("/pessoa", values);
+      Notiflix.Notify.success("Contato criado com sucesso!");
+      getUsers();
+    } catch (error) {
+      console.log("Algo de errado nao esta certo no createUser", error);
+      Notiflix.Notify.failure(
+        "Sinto muito, mas nao foi possivel criar esse contato."
+      );
+    }
+  };
+
+  async function choiceUpdateAddress(id: number) {
+    try {
+      const { data } = await api.get(`pessoa/{idPessoa}?idPessoa=${id}`);
+      setIdUser(id);
+      formik.setFieldValue("nome", data.nome);
+      formik.setFieldValue("email", data.email);
+      formik.setFieldValue("dataNascimento", moment(data.dataNascimento, "YYYY-MM-DD").format("DD/MM/YYYY"));
+      formik.setFieldValue("cpf", data.cpf);
+    } catch (error) {
+      console.log("Erro ao tentar acessar api endereço por id", error);
+    }
+  }
+
+  const updateUser = async () => {
+    const newUserData = {
+      nome: formik.values.nome,
+      dataNascimento: moment(formik.values.dataNascimento, "DD/MM/YYYY").format("YYYY-MM-DD"),
+      email: formik.values.email,
+      cpf: formik.values.cpf,
+      idPessoa: idUser,
+    };
+    try {
+      const { data } = await api.put(`/pessoa/${idUser}`, newUserData);
+      Notiflix.Notify.success("Usuário atualizado com sucesso!");
+      getUsers();
+    } catch (error) {
+      console.log(
+        "Deu erro na hora de tentar atualizar o usuário. Afe",
+        error
+      );
+      Notiflix.Notify.failure(
+        "Sinto muito, mas nao foi possivel atualizar esse usuário."
+      );
+    }
+  };
+  
+
+  const formik = useFormik({
+    initialValues: {
+      nome: "",
+      email: "",
+      dataNascimento: "",
+      cpf: "",
+    },
+    validationSchema: Yup.object({
+      nome: Yup.string()
+        .min(2, "muito curto")
+        .max(50, "muito longo")
+        .required("Você precisa preencher esse campo"),
+      email: Yup.string()
+        .email("Este campo precisa ser preenchido com um email.")
+        .required("Você precisa preencher esse campo"),
+      dataNascimento: Yup.string().required(
+        "Você precisa preencher esse campo"
+      ),
+      cpf: Yup.string().required("Você precisa preencher esse campo"),
+    }),
+    onSubmit: async (values: NewUserDTO) => {
+      createUser(values);
+    },
   });
 
   return (
     <Container>
       <ContainerInterno>
         <h3>Cadastrar novo usuário:</h3>
-        <Formik
-          initialValues={{
-            nome: "",
-            email: "",
-            dataNascimento: "",
-            cpf: "",
-          }}
-          validationSchema={SignupSchema}
-          onSubmit={async (values: NewUserDTO) => {
-            createUser(values);
-          }}
-        >
-          {(props) => (
-            <Form>
-              <FormNewUser>
-                <DivLabelField>
-                  <label htmlFor="nome">Nome:</label>
-                  <Field
-                    as={InputWithMask}
-                    id="nome"
-                    name="nome"
-                    placeholder="Name"
-                  />
-                  {props.errors.nome && props.touched.nome ? (
-                    <AlertErrorInput>{props.errors.nome}</AlertErrorInput>
-                  ) : null}
-                </DivLabelField>
+        <form onSubmit={formik.handleSubmit}>
+          <FormNewUser>
+            <DivLabelField>
+              <label htmlFor="nome">Nome:</label>
+              <Input
+                id="nome"
+                name="nome"
+                placeholder="Name"
+                value={formik.values.nome}
+                onChange={formik.handleChange}
+              />
+              {formik.errors.nome && formik.touched.nome ? (
+                <AlertErrorInput>{formik.errors.nome}</AlertErrorInput>
+              ) : null}
+            </DivLabelField>
 
-                <DivLabelField>
-                  <label htmlFor="email">Email:</label>
-                  <Field
-                    as={InputWithMask}
-                    id="email"
-                    name="email"
-                    placeholder="youremail@email.com"
-                    type="email"
-                  />
-                  {props.errors.email && props.touched.email ? (
-                    <AlertErrorInput>{props.errors.email}</AlertErrorInput>
-                  ) : null}
-                </DivLabelField>
+            <DivLabelField>
+              <label htmlFor="email">Email:</label>
+              <Input
+                id="email"
+                name="email"
+                placeholder="youremail@email.com"
+                type="email"
+                value={formik.values.email}
+                onChange={formik.handleChange}
+              />
+              {formik.errors.email && formik.touched.email ? (
+                <AlertErrorInput>{formik.errors.email}</AlertErrorInput>
+              ) : null}
+            </DivLabelField>
 
-                <DivLabelField>
-                  <label htmlFor="dataNascimento">Data de nascimento:</label>
-                  <Field
-                    as={InputWithMask}
-                    mask="99/99/9999"
-                    id="dataNascimento"
-                    name="dataNascimento"
-                    placeholder="00/00/0000"
-                  />
-                  {props.errors.dataNascimento &&
-                  props.touched.dataNascimento ? (
-                    <AlertErrorInput>
-                      {props.errors.dataNascimento}
-                    </AlertErrorInput>
-                  ) : null}
-                </DivLabelField>
+            <DivLabelField>
+              <label htmlFor="dataNascimento">Data de nascimento:</label>
+              <Input
+                as={InputMask}
+                mask="99/99/9999"
+                id="dataNascimento"
+                name="dataNascimento"
+                placeholder="00/00/0000"
+                value={formik.values.dataNascimento}
+                onChange={formik.handleChange}
+              />
+              {formik.errors.dataNascimento && formik.touched.dataNascimento ? (
+                <AlertErrorInput>
+                  {formik.errors.dataNascimento}
+                </AlertErrorInput>
+              ) : null}
+            </DivLabelField>
 
-                <DivLabelField>
-                  <label htmlFor="cpf">CPF:</label>
-                  <Field
-                    as={InputWithMask}
-                    mask="999.999.999-99"
-                    id="cpf"
-                    name="cpf"
-                    placeholder="000.000.000-00"
-                  />
-                  {props.errors.cpf && props.touched.cpf ? (
-                    <AlertErrorInput>{props.errors.cpf}</AlertErrorInput>
-                  ) : null}
-                </DivLabelField>
+            <DivLabelField>
+              <label htmlFor="cpf">CPF:</label>
+              <Input
+                as={InputMask}
+                mask="999.999.999-99"
+                id="cpf"
+                name="cpf"
+                placeholder="000.000.000-00"
+                value={formik.values.cpf}
+                onChange={formik.handleChange}
+              />
+              {formik.errors.cpf && formik.touched.cpf ? (
+                <AlertErrorInput>{formik.errors.cpf}</AlertErrorInput>
+              ) : null}
+            </DivLabelField>
 
-                <DivLabelField>
-                  <Button type="submit" color={"#29CC97"}>
-                    Cadastrar
-                  </Button>
-                </DivLabelField>
-              </FormNewUser>
-              <AllUsersTitle>All users</AllUsersTitle>
-              <TableUsers>
-                <p>Name User</p>
-                <p>Birthday</p>
-                <p>Cpf</p>
-                <p>Email</p>
-              </TableUsers>
-              {loading && <Loading />}
-              {error && <Error />}
-              {!loading && !error && <List users={user}/>}
-            </Form>
-          )}
-        </Formik>
+            <DivLabelField>
+              <DivButtons>
+              <Button type="submit" color={"#29CC97"}>
+                Cadastrar
+              </Button>
+              <Button
+                  type="button"
+                  color={"#b4cc29"}
+                  onClick={() => updateUser()}
+                >
+                  Atualizar
+                </Button>
+                </DivButtons>
+            </DivLabelField>
+          </FormNewUser>
+
+        </form>
+        {loading && <Loading />}
+        {error && <Error />}
+        {!loading && !error && (
+          <>    
+        <AllUsersTitle>All users</AllUsersTitle>
+          <TableUsers>
+            <p>Name User</p>
+            <p>Birthday</p>
+            <p>Cpf</p>
+            <p>Email</p>
+          </TableUsers>
+        {user.map((u: UsersDTO['users']) => (
+          <ListUsers key={u.idPessoa}>
+            <div>
+              <h4>{u.nome}</h4>
+            </div>
+            <div>
+              <p>{moment(u.dataNascimento).format("DD/MM/YYYY")}</p>
+            </div>
+            <div>
+              <p>{formatarCPF(u.cpf)}</p>
+            </div>
+            <div>
+              <p>{u.email}</p>
+            </div>
+            <Button
+              type="button"
+              color={"green"}
+              onClick={() => choiceUpdateAddress(u.idPessoa)}
+            >
+              Atualizar
+            </Button>
+            <Button
+              type="button"
+              color={"red"}
+              onClick={() => deleteUser(u.idPessoa)}
+            >
+              Deletar
+            </Button>
+          </ListUsers>
+        ))}
+        </>)}
       </ContainerInterno>
     </Container>
   );

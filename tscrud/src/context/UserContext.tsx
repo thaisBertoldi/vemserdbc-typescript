@@ -8,7 +8,7 @@ import moment from "moment";
 export const UserContext = createContext({});
 
 const UserProvider: FC<ReactNode> = ({children}) => {
-    const [user, setUser] = useState<UsersDTO['users']>([]);
+    const [user, setUser] = useState<UsersDTO['users']>();
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState(false);
 
@@ -22,24 +22,6 @@ const UserProvider: FC<ReactNode> = ({children}) => {
             setLoading(false)
             setError(true)
         }
-    }
-
-    const createUser = async (values: NewUserDTO) => {
-        values.dataNascimento = moment(values.dataNascimento, "DD/MM/YYYY").format("YYYY-MM-DD")
-        values.cpf = values.cpf.replaceAll('.', '').replaceAll('-', '')
-        console.log(values)
-        try {
-            const {data} = await api.post('/pessoa', values)
-            Notiflix.Notify.success('Contato criado com sucesso!');
-            getUsers()
-        } catch (error) {
-            console.log('Algo de errado nao esta certo no createUser', error)
-            Notiflix.Notify.failure('Sinto muito, mas nao foi possivel criar esse contato.');
-        }
-    }
-
-    const updateUser = async (id: number) => {
-        console.log(id)
     }
 
     const deleteUser = (id: number) => {
@@ -69,7 +51,7 @@ const UserProvider: FC<ReactNode> = ({children}) => {
     }
 
     return (
-        <UserContext.Provider value={{getUsers, user, loading, setLoading, error, setError, updateUser, deleteUser, createUser}}>
+        <UserContext.Provider value={{getUsers, user, loading, setLoading, error, setError, deleteUser}}>
             {children}
         </UserContext.Provider>
     )

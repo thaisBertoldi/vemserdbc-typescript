@@ -24,7 +24,7 @@ function Home() {
         <Card>
           <LinkHome to="/users">
             <CardTitle>Users</CardTitle>
-            <PNumber>{user.length}</PNumber>
+            {/* <PNumber>{user.length}</PNumber> */}
           </LinkHome>
         </Card>
         <Card>

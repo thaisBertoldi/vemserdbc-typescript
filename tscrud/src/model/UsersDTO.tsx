@@ -5,5 +5,5 @@ export interface UsersDTO {
     email: string;
     idPessoa: number;
     nome: string;
-  }[];
+  }
 }
