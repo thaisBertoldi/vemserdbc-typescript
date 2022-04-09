@@ -1,4 +1,3 @@
-import axios from "axios";
 import { createContext, FC, ReactNode, useState } from "react";
 import Notiflix from 'notiflix';
 import api from "../api";
@@ -9,34 +8,19 @@ export const AddressContext = createContext({});
 const AddressProvider: FC<ReactNode> = ({ children }) => {
   const [addressGet, setAddressGet] = useState<any>([]);
 
-  async function getAddress(values: ViaCEPDTO["viaCep"], setFieldValue: any) {
-    try {
-      const { data } = await axios.get(
-        `https://viacep.com.br/ws/${values.cep}/json/`
-      );
-      setFieldValue("bairro", data.bairro);
-      setFieldValue("logradouro", data.logradouro);
-      setFieldValue("complemento", data.complemento);
-      setFieldValue("localidade", data.localidade);
-      setFieldValue("uf", data.uf);
-    } catch (error) {
-      console.log("Erro ao tentar acessar a api viacep", error);
-    }
-  }
-
   async function createAddress(values: ViaCEPDTO["viaCep"]) {
     const addressApi = {
-      cep: values.cep,
+      cep: values.cep.replace('-', ''),
       cidade: values.localidade,
       complemento: values.complemento,
       estado: values.uf,
       logradouro: values.logradouro,
-      numero: parseInt(values.numero),
+      numero: Number(values.numero),
       pais: values.pais,
       tipo: values.tipo,
     };
     try {
-      const { data } = await api.post("/endereco/662", addressApi);
+      const { data } = await api.post("/endereco/663", addressApi);
       Notiflix.Notify.success('Endereço criado com sucesso!');
       returnAddress()
     } catch (error) {
@@ -52,10 +36,6 @@ const AddressProvider: FC<ReactNode> = ({ children }) => {
     } catch (error) {
       console.log("Erro ao tentar pegar os endereços cadastrados", error);
     }
-  }
-
-  async function updateAddress(id: number){
-    console.log(id)
   }
 
   async function deleteAddress(id: number){
@@ -86,7 +66,7 @@ const AddressProvider: FC<ReactNode> = ({ children }) => {
 
   return (
     <AddressContext.Provider
-      value={{ getAddress, createAddress, returnAddress, addressGet, deleteAddress, updateAddress }}
+      value={{ createAddress, returnAddress, addressGet, deleteAddress }}
     >
       {children}
     </AddressContext.Provider>

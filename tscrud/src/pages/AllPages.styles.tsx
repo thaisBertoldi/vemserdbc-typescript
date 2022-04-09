@@ -15,9 +15,9 @@ export const ContainerInterno = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 1122px;
+  width: 1100px;
   margin-top: 128px;
-  margin-left: 80px;
+  margin-left: 10px;
   background-color: #ffffff;
   border-radius: 8px;
   padding: 15px;

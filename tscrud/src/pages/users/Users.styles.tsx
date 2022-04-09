@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import InputMask from "react-input-mask";
 
 export const ListUsers = styled.div`
   display: grid;
@@ -32,3 +33,9 @@ export const DivLabelField = styled.div`
   flex-direction: column;
   padding-top: 15px;
 `;
+
+export const InputWithMask = styled(InputMask)`
+    height: 30px;
+    border-radius: 4px;
+    border: 1px #E5E5E5 solid;
+`
