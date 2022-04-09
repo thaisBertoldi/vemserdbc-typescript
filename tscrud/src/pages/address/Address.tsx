@@ -1,7 +1,8 @@
-import { ErrorMessage, FormikHelpers, useFormik } from "formik";
+import { FormikHelpers, useFormik } from "formik";
 import * as Yup from "yup";
 import Notiflix from "notiflix";
 import { useContext, useEffect, useState } from "react";
+import InputMask from "react-input-mask";
 import api from "../../api";
 import { AddressContext } from "../../context/AddressContext";
 import { ViaCEPDTO } from "../../model/AddressDTO";
@@ -44,11 +45,6 @@ function Address() {
       formik.setFieldValue("localidade", data.localidade);
       formik.setFieldValue("uf", data.uf);
       formik.setFieldValue("complemento", data.complemento);
-      // setFieldValue("bairro", data.bairro);
-      // setFieldValue("logradouro", data.logradouro);
-      //
-      // setFieldValue("localidade", data.localidade);
-      // setFieldValue("uf", data.uf);
     } catch (error) {
       console.log("Erro ao tentar acessar a api viacep", error);
     }
@@ -165,6 +161,8 @@ function Address() {
               <LabelInput>
                 <label htmlFor="cep">CEP</label>
                 <Input
+                as={InputMask}
+                mask="99999-999"
                   id="cep"
                   name="cep"
                   placeholder="00000-000"
