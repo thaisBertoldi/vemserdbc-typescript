@@ -1,6 +1,6 @@
-import { FormikHelpers, useFormik } from "formik";
+import { ErrorMessage, FormikHelpers, useFormik } from "formik";
 import * as Yup from "yup";
-import Notiflix from 'notiflix';
+import Notiflix from "notiflix";
 import { useContext, useEffect, useState } from "react";
 import api from "../../api";
 import { AddressContext } from "../../context/AddressContext";
@@ -32,29 +32,6 @@ function Address() {
     }
     returnAddress();
   }, []);
-
-  const formik = useFormik({
-    initialValues: {
-      cep: "",
-      logradouro: "",
-      complemento: "",
-      bairro: "",
-      localidade: "",
-      uf: "",
-      numero: "",
-      tipo: "RESIDENCIAL",
-      pais: "",
-    },
-    // validationSchema={SignupSchema}
-    onSubmit: (
-      values: ViaCEPDTO["viaCep"],
-      { setSubmitting }: FormikHelpers<ViaCEPDTO["viaCep"]>
-    ) => {
-      createAddress(values);
-      console.log(values);
-      setSubmitting(false);
-    },
-  });
 
   async function getAddress(values: string) {
     console.log(values);
@@ -108,50 +85,75 @@ function Address() {
     };
     try {
       const { data } = await api.put(`/endereco/${idAddress}`, newAddressData);
-      Notiflix.Notify.success('Endereço atualizado com sucesso!');
+      Notiflix.Notify.success("Endereço atualizado com sucesso!");
       returnAddress();
     } catch (error) {
-      console.log("Deu erro na hora de tentar atualizar o endereço. Afe", error)
-      Notiflix.Notify.failure('Sinto muito, mas nao foi possivel criar esse endereço.');
+      console.log(
+        "Deu erro na hora de tentar atualizar o endereço. Afe",
+        error
+      );
+      Notiflix.Notify.failure(
+        "Sinto muito, mas nao foi possivel atualizar esse endereço."
+      );
     }
   }
 
-  // const SignupSchema = Yup.object().shape({
-  //   logradouro: Yup.string()
-  //     .min(2, "muito curto")
-  //     .max(50, "muito longo")
-  //     .required("Você precisa preencher esse campo"),
-  //   cep: Yup.string()
-  //     .required("Você precisa preencher esse campo"),
-  //   complemento: Yup.string()
-  //     .min(1, "Complemento precisa conter alguma coisa.")
-  //     .max(50, "Existe mesmo um complemento tão grande assim?")
-  //     .required("Você precisa preencher esse campo"),
-  //   bairro: Yup.string()
-  //     .min(1, "Bairro precisa conter alguma coisa.")
-  //     .max(50, "Existe mesmo um bairro tão grande assim?")
-  //     .required("Você precisa preencher esse campo"),
-  //   localidade: Yup.string()
-  //     .min(1, "Cidade precisa conter alguma coisa.")
-  //     .max(50, "Existe mesmo uma cidade com nome tão grande assim?")
-  //     .required("Você precisa preencher esse campo"),
-  //   uf: Yup.string()
-  //     .min(2, "UF precisa conter duas letras. Ex: RS")
-  //     .max(2, "UF precisa conter duas letras. Ex: RS")
-  //     .required("Você precisa preencher esse campo"),
-  //   numero: Yup.string()
-  //     .max(
-  //       15,
-  //       "Não tem como o número da sua casa ser maior do que isso, acredite."
-  //     )
-  //     .required("Você precisa preencher esse campo"),
-  //   pais: Yup.string()
-  //     .max(
-  //       25,
-  //       "Llanfairpwllgwyngyll é o maior nome de localidade do mundo e tem 20 letras. Consultei no Google, não me tente."
-  //     )
-  //     .required("Você precisa preencher esse campo"),
-  // });
+  const formik = useFormik({
+    initialValues: {
+      cep: "",
+      logradouro: "",
+      complemento: "",
+      bairro: "",
+      localidade: "",
+      uf: "",
+      numero: "",
+      tipo: "RESIDENCIAL",
+      pais: "",
+    },
+    validationSchema: Yup.object({
+      logradouro: Yup.string()
+        .min(2, "muito curto")
+        .max(50, "muito longo")
+        .required("Você precisa preencher esse campo"),
+      cep: Yup.string().required("Você precisa preencher esse campo"),
+      complemento: Yup.string()
+        .min(1, "Complemento precisa conter alguma coisa.")
+        .max(50, "Existe mesmo um complemento tão grande assim?")
+        .required("Você precisa preencher esse campo"),
+      bairro: Yup.string()
+        .min(1, "Bairro precisa conter alguma coisa.")
+        .max(50, "Existe mesmo um bairro tão grande assim?")
+        .required("Você precisa preencher esse campo"),
+      localidade: Yup.string()
+        .min(1, "Cidade precisa conter alguma coisa.")
+        .max(50, "Existe mesmo uma cidade com nome tão grande assim?")
+        .required("Você precisa preencher esse campo"),
+      uf: Yup.string()
+        .min(2, "UF precisa conter duas letras. Ex: RS")
+        .max(2, "UF precisa conter duas letras. Ex: RS")
+        .required("Você precisa preencher esse campo"),
+      numero: Yup.string()
+        .max(
+          15,
+          "Não tem como o número da sua casa ser maior do que isso, acredite."
+        )
+        .required("Você precisa preencher esse campo"),
+      pais: Yup.string()
+        .max(
+          25,
+          "Llanfairpwllgwyngyll é o maior nome de localidade do mundo e tem 20 letras. Consultei no Google, não me tente."
+        )
+        .required("Você precisa preencher esse campo"),
+        }),
+    onSubmit: (
+      values: ViaCEPDTO["viaCep"],
+      { setSubmitting }: FormikHelpers<ViaCEPDTO["viaCep"]>
+    ) => {
+      createAddress(values);
+      console.log(values);
+      setSubmitting(false);
+    },
+  });
 
   return (
     <Container>
@@ -169,9 +171,9 @@ function Address() {
                   value={formik.values.cep}
                   onChange={formik.handleChange}
                 />
-                {/* {props.errors.cep && props.touched.cep ? (
-                      <AlertErrorInput>{props.errors.cep}</AlertErrorInput>
-                    ) : null} */}
+                {formik.errors.cep && formik.touched.cep ? (
+                  <AlertErrorInput>{formik.errors.cep}</AlertErrorInput>
+                ) : null}
 
                 <Button
                   type="button"
@@ -193,11 +195,9 @@ function Address() {
                   name="logradouro"
                   placeholder="Logradouro"
                 />
-                {/* {props.errors.logradouro && props.touched.logradouro ? (
-                      <AlertErrorInput>
-                        {props.errors.logradouro}
-                      </AlertErrorInput>
-                    ) : null} */}
+                {formik.errors.logradouro && formik.touched.logradouro ? (
+                  <AlertErrorInput>{formik.errors.logradouro}</AlertErrorInput>
+                ) : null}
               </LabelInput>
 
               <LabelInput>
@@ -209,11 +209,9 @@ function Address() {
                   name="complemento"
                   placeholder="Complemento"
                 />
-                {/* {props.errors.complemento && props.touched.complemento ? (
-                      <AlertErrorInput>
-                        {props.errors.complemento}
-                      </AlertErrorInput>
-                    ) : null} */}
+                {formik.errors.complemento && formik.touched.complemento ? (
+                  <AlertErrorInput>{formik.errors.complemento}</AlertErrorInput>
+                ) : null}
               </LabelInput>
 
               <LabelInput>
@@ -225,9 +223,9 @@ function Address() {
                   value={formik.values.bairro}
                   onChange={formik.handleChange}
                 />
-                {/* {props.errors.bairro && props.touched.bairro ? (
-                      <AlertErrorInput>{props.errors.bairro}</AlertErrorInput>
-                    ) : null} */}
+                {formik.errors.bairro && formik.touched.bairro ? (
+                  <AlertErrorInput>{formik.errors.bairro}</AlertErrorInput>
+                ) : null}
               </LabelInput>
 
               <LabelInput>
@@ -239,11 +237,9 @@ function Address() {
                   name="localidade"
                   placeholder="Localidade"
                 />
-                {/* {props.errors.localidade && props.touched.localidade ? (
-                      <AlertErrorInput>
-                        {props.errors.localidade}
-                      </AlertErrorInput>
-                    ) : null} */}
+                {formik.errors.localidade && formik.touched.localidade ? (
+                  <AlertErrorInput>{formik.errors.localidade}</AlertErrorInput>
+                ) : null}
               </LabelInput>
 
               <LabelInput>
@@ -255,9 +251,9 @@ function Address() {
                   value={formik.values.uf}
                   onChange={formik.handleChange}
                 />
-                {/* {props.errors.uf && props.touched.uf ? (
-                      <AlertErrorInput>{props.errors.uf}</AlertErrorInput>
-                    ) : null} */}
+                {formik.errors.uf && formik.touched.uf ? (
+                  <AlertErrorInput>{formik.errors.uf}</AlertErrorInput>
+                ) : null}
               </LabelInput>
 
               <LabelInput>
@@ -269,9 +265,9 @@ function Address() {
                   value={formik.values.numero}
                   onChange={formik.handleChange}
                 />
-                {/* {props.errors.numero && props.touched.numero ? (
-                      <AlertErrorInput>{props.errors.numero}</AlertErrorInput>
-                    ) : null} */}
+                {formik.errors.numero && formik.touched.numero ? (
+                  <AlertErrorInput>{formik.errors.numero}</AlertErrorInput>
+                ) : null}
               </LabelInput>
 
               <LabelInput>
@@ -295,9 +291,9 @@ function Address() {
                   value={formik.values.pais}
                   onChange={formik.handleChange}
                 />
-                {/* {props.errors.pais && props.touched.pais ? (
-                      <AlertErrorInput>{props.errors.pais}</AlertErrorInput>
-                    ) : null} */}
+                {formik.errors.pais && formik.touched.pais ? (
+                  <AlertErrorInput>{formik.errors.pais}</AlertErrorInput>
+                ) : null}
               </LabelInput>
             </FormAddress>
 
