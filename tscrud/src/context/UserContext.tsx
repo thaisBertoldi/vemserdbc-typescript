@@ -9,12 +9,14 @@ export const UserContext = createContext({});
 
 const UserProvider: FC<ReactNode> = ({children}) => {
     const [user, setUser] = useState<UsersDTO['users']>();
+    const [usersLength, setUsersLength] = useState([])
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState(false);
 
     const getUsers = async () => {
         try {
             const {data} = await api.get('/pessoa')
+            setUsersLength(data)
             setUser(data)
             setLoading(false)
         } catch (error) {
@@ -51,7 +53,7 @@ const UserProvider: FC<ReactNode> = ({children}) => {
     }
 
     return (
-        <UserContext.Provider value={{getUsers, user, loading, setLoading, error, setError, deleteUser}}>
+        <UserContext.Provider value={{getUsers, user, loading, setLoading, error, setError, deleteUser, usersLength}}>
             {children}
         </UserContext.Provider>
     )

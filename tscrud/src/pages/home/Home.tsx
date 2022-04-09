@@ -7,7 +7,7 @@ import { Card, CardTitle, LinkHome, PNumber } from "./Home.styles";
 
 function Home() {
   const { addressGet, returnAddress } = useContext<any>(AddressContext);
-  const { user, getUsers } = useContext<any>(UserContext);
+  const { usersLength, getUsers } = useContext<any>(UserContext);
   const getToken = localStorage.getItem("token");
 
   useEffect(() => {
@@ -24,7 +24,7 @@ function Home() {
         <Card>
           <LinkHome to="/users">
             <CardTitle>Users</CardTitle>
-            {/* <PNumber>{user.length}</PNumber> */}
+            <PNumber>{usersLength.length}</PNumber>
           </LinkHome>
         </Card>
         <Card>
