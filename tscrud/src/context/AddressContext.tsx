@@ -7,6 +7,8 @@ export const AddressContext = createContext({});
 
 const AddressProvider: FC<ReactNode> = ({ children }) => {
   const [addressGet, setAddressGet] = useState<any>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState(false);
 
   async function createAddress(values: ViaCEPDTO["viaCep"]) {
     const addressApi = {
@@ -33,8 +35,11 @@ const AddressProvider: FC<ReactNode> = ({ children }) => {
     try {
       const { data } = await api.get("/endereco");
       setAddressGet(data);
+      setLoading(false)
     } catch (error) {
       console.log("Erro ao tentar pegar os endereços cadastrados", error);
+      setLoading(false)
+      setError(true)
     }
   }
 
@@ -66,7 +71,7 @@ const AddressProvider: FC<ReactNode> = ({ children }) => {
 
   return (
     <AddressContext.Provider
-      value={{ createAddress, returnAddress, addressGet, deleteAddress }}
+      value={{ createAddress, returnAddress, addressGet, deleteAddress, loading, setLoading, error, setError, }}
     >
       {children}
     </AddressContext.Provider>

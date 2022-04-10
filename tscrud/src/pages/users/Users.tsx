@@ -210,9 +210,9 @@ function Users() {
           </FormNewUser>
 
         </form>
-        {loading && <Loading />}
-        {error && <Error />}
-        {!loading && !error && (
+        {loading ? <Loading />
+        : error ? <Error /> :
+        (
           <>    
         <AllUsersTitle>All users</AllUsersTitle>
           <TableUsers>

@@ -18,9 +18,11 @@ import {
 } from "./Address.styles";
 import { Button, Container, ContainerInterno } from "../AllPages.styles";
 import axios from "axios";
+import Loading from "../../components/loading/Loading";
+import Error from "../../components/error/Error";
 
 function Address() {
-  const { createAddress, addressGet, returnAddress, deleteAddress } =
+  const { createAddress, addressGet, returnAddress, deleteAddress, loading, error } =
     useContext<any>(AddressContext);
 
   const [idAddress, setIdAddress] = useState<number | null>();
@@ -147,7 +149,6 @@ function Address() {
     onSubmit: (
       values: ViaCEPDTO["viaCep"],
       { resetForm },
-      // { setSubmitting }: FormikHelpers<ViaCEPDTO["viaCep"]>
     ) => {
       if(!isUpdate){
         createAddress(values);
@@ -156,7 +157,6 @@ function Address() {
       }
       resetForm()
       console.log(values);
-      // setSubmitting(false);
     },
   });
 
@@ -319,7 +319,9 @@ function Address() {
             </FormAddress>
           </AllFormAddress>
         </form>
-
+        {loading ? <Loading />
+        : error ? <Error /> :
+        (
         <div>
           <h3>All address</h3>
           <TableAddress>
@@ -354,7 +356,7 @@ function Address() {
               </Button>
             </ListAddress>
           ))}
-        </div>
+        </div>)}
       </ContainerInterno>
     </Container>
   );
