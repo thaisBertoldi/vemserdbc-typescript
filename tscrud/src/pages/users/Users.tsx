@@ -115,8 +115,13 @@ function Users() {
       ),
       cpf: Yup.string().required("Você precisa preencher esse campo"),
     }),
-    onSubmit: async (values: NewUserDTO) => {
-      createUser(values);
+    onSubmit: async (values: NewUserDTO, { resetForm }) => {
+      if(!isUpdate){
+        createUser(values);
+      }else{
+        updateUser();
+      }
+      resetForm();
     },
   });
 
@@ -195,9 +200,8 @@ function Users() {
                 Cadastrar
               </Button>}
               {isUpdate && <Button
-                  type="button"
+                  type="submit"
                   color={"#b4cc29"}
-                  onClick={() => updateUser()}
                 >
                   Atualizar
                 </Button>}

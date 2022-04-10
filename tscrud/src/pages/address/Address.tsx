@@ -146,11 +146,17 @@ function Address() {
         }),
     onSubmit: (
       values: ViaCEPDTO["viaCep"],
-      { setSubmitting }: FormikHelpers<ViaCEPDTO["viaCep"]>
+      { resetForm },
+      // { setSubmitting }: FormikHelpers<ViaCEPDTO["viaCep"]>
     ) => {
-      createAddress(values);
+      if(!isUpdate){
+        createAddress(values);
+      } else {
+        updateAddress();
+      }
+      resetForm()
       console.log(values);
-      setSubmitting(false);
+      // setSubmitting(false);
     },
   });
 
@@ -304,9 +310,8 @@ function Address() {
                   Cadastrar
                 </Button>}
                 {isUpdate && <Button
-                  type="button"
+                  type="submit"
                   color={"#b4cc29"}
-                  onClick={() => updateAddress()}
                 >
                   Atualizar
                 </Button>}
