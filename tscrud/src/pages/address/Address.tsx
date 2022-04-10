@@ -1,8 +1,9 @@
-import { FormikHelpers, useFormik } from "formik";
 import * as Yup from "yup";
-import Notiflix from "notiflix";
-import { useContext, useEffect, useState } from "react";
+import axios from "axios";
 import InputMask from "react-input-mask";
+import Notiflix from "notiflix";
+import { useFormik } from "formik";
+import { useContext, useEffect, useState } from "react";
 import api from "../../api";
 import { AddressContext } from "../../context/AddressContext";
 import { ViaCEPDTO } from "../../model/AddressDTO";
@@ -17,16 +18,21 @@ import {
   TableAddress,
 } from "./Address.styles";
 import { Button, Container, ContainerInterno } from "../AllPages.styles";
-import axios from "axios";
 import Loading from "../../components/loading/Loading";
 import Error from "../../components/error/Error";
 
 function Address() {
-  const { createAddress, addressGet, returnAddress, deleteAddress, loading, error } =
-    useContext<any>(AddressContext);
+  const {
+    createAddress,
+    addressGet,
+    returnAddress,
+    deleteAddress,
+    loading,
+    error,
+  } = useContext<any>(AddressContext);
 
   const [idAddress, setIdAddress] = useState<number | null>();
-  const [isUpdate, setIsUpdate] = useState(false)
+  const [isUpdate, setIsUpdate] = useState(false);
 
   const getToken = localStorage.getItem("token");
 
@@ -38,7 +44,6 @@ function Address() {
   }, []);
 
   async function getAddress(values: string) {
-    console.log(values);
     try {
       const { data } = await axios.get(
         `https://viacep.com.br/ws/${values}/json/`
@@ -54,7 +59,7 @@ function Address() {
   }
 
   async function choiceUpdateAddress(id: number) {
-    setIsUpdate(true)
+    setIsUpdate(true);
     try {
       const { data } = await api.get(`endereco/${id}`);
       setIdAddress(id);
@@ -96,7 +101,7 @@ function Address() {
         "Sinto muito, mas nao foi possivel atualizar esse endereço."
       );
     }
-    setIsUpdate(false)
+    setIsUpdate(false);
   }
 
   const formik = useFormik({
@@ -132,31 +137,31 @@ function Address() {
       uf: Yup.string()
         .min(2, "UF precisa conter duas letras. Ex: RS")
         .max(2, "UF precisa conter duas letras. Ex: RS")
+        .matches(/a-z/gi, "Você precisa preencher esse campo apenas com letras")
         .required("Você precisa preencher esse campo"),
       numero: Yup.string()
         .max(
           15,
           "Não tem como o número da sua casa ser maior do que isso, acredite."
+         
         )
+        .matches(/\d/gi, "Você precisa preencher esse campo apenas com números")
         .required("Você precisa preencher esse campo"),
       pais: Yup.string()
         .max(
           25,
           "Llanfairpwllgwyngyll é o maior nome de localidade do mundo e tem 20 letras. Consultei no Google, não me tente."
         )
+        .matches(/a-z/gi, "Você precisa preencher esse campo apenas com letras")
         .required("Você precisa preencher esse campo"),
-        }),
-    onSubmit: (
-      values: ViaCEPDTO["viaCep"],
-      { resetForm },
-    ) => {
-      if(!isUpdate){
+    }),
+    onSubmit: (values: ViaCEPDTO["viaCep"], { resetForm }) => {
+      if (!isUpdate) {
         createAddress(values);
       } else {
         updateAddress();
       }
-      resetForm()
-      console.log(values);
+      resetForm();
     },
   });
 
@@ -170,13 +175,14 @@ function Address() {
               <LabelInput>
                 <label htmlFor="cep">CEP</label>
                 <Input
-                as={InputMask}
-                mask="99999-999"
+                  as={InputMask}
+                  mask="99999-999"
                   id="cep"
                   name="cep"
                   placeholder="00000-000"
                   value={formik.values.cep}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
                 {formik.errors.cep && formik.touched.cep ? (
                   <AlertErrorInput>{formik.errors.cep}</AlertErrorInput>
@@ -201,6 +207,7 @@ function Address() {
                   id="logradouro"
                   name="logradouro"
                   placeholder="Logradouro"
+                  onBlur={formik.handleBlur}
                 />
                 {formik.errors.logradouro && formik.touched.logradouro ? (
                   <AlertErrorInput>{formik.errors.logradouro}</AlertErrorInput>
@@ -215,6 +222,7 @@ function Address() {
                   id="complemento"
                   name="complemento"
                   placeholder="Complemento"
+                  onBlur={formik.handleBlur}
                 />
                 {formik.errors.complemento && formik.touched.complemento ? (
                   <AlertErrorInput>{formik.errors.complemento}</AlertErrorInput>
@@ -229,6 +237,7 @@ function Address() {
                   placeholder="Bairro"
                   value={formik.values.bairro}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
                 {formik.errors.bairro && formik.touched.bairro ? (
                   <AlertErrorInput>{formik.errors.bairro}</AlertErrorInput>
@@ -243,6 +252,7 @@ function Address() {
                   id="localidade"
                   name="localidade"
                   placeholder="Localidade"
+                  onBlur={formik.handleBlur}
                 />
                 {formik.errors.localidade && formik.touched.localidade ? (
                   <AlertErrorInput>{formik.errors.localidade}</AlertErrorInput>
@@ -257,6 +267,7 @@ function Address() {
                   placeholder="UF"
                   value={formik.values.uf}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
                 {formik.errors.uf && formik.touched.uf ? (
                   <AlertErrorInput>{formik.errors.uf}</AlertErrorInput>
@@ -271,6 +282,7 @@ function Address() {
                   placeholder="00"
                   value={formik.values.numero}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
                 {formik.errors.numero && formik.touched.numero ? (
                   <AlertErrorInput>{formik.errors.numero}</AlertErrorInput>
@@ -283,6 +295,7 @@ function Address() {
                   name="tipo"
                   value={formik.values.tipo}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 >
                   <option value="RESIDENCIAL">RESIDENCIAL</option>
                   <option value="COMERCIAL">COMERCIAL</option>
@@ -297,6 +310,7 @@ function Address() {
                   placeholder="País"
                   value={formik.values.pais}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
                 {formik.errors.pais && formik.touched.pais ? (
                   <AlertErrorInput>{formik.errors.pais}</AlertErrorInput>
@@ -306,57 +320,61 @@ function Address() {
 
             <FormAddress>
               <LabelInput>
-                {!isUpdate && <Button type="submit" color={"#29CC97"}>
-                  Cadastrar
-                </Button>}
-                {isUpdate && <Button
-                  type="submit"
-                  color={"#b4cc29"}
-                >
-                  Atualizar
-                </Button>}
+                {!isUpdate && (
+                  <Button type="submit" color={"#29CC97"}>
+                    Cadastrar
+                  </Button>
+                )}
+                {isUpdate && (
+                  <Button type="submit" color={"#b4cc29"}>
+                    Atualizar
+                  </Button>
+                )}
               </LabelInput>
             </FormAddress>
           </AllFormAddress>
         </form>
-        {loading ? <Loading />
-        : error ? <Error /> :
-        (
-        <div>
-          <h3>All address</h3>
-          <TableAddress>
-            <p>Logradouro</p>
-            <p>Numero</p>
-            <p>Complemento</p>
-            <p>Cidade</p>
-            <p>Estado</p>
-            <p>País</p>
-          </TableAddress>
-          {addressGet.map((add: any) => (
-            <ListAddress key={add.idEndereco}>
-              <h4>{add.logradouro}</h4>
-              <p>{add.numero}</p>
-              <p>{add.complemento}</p>
-              <p>{add.cidade}</p>
-              <p>{add.estado}</p>
-              <p>{add.pais}</p>
-              <Button
-                type="button"
-                color={"green"}
-                onClick={() => choiceUpdateAddress(add.idEndereco)}
-              >
-                Atualizar
-              </Button>
-              <Button
-                type="button"
-                color={"red"}
-                onClick={() => deleteAddress(add.idEndereco)}
-              >
-                Deletar
-              </Button>
-            </ListAddress>
-          ))}
-        </div>)}
+        {loading ? (
+          <Loading />
+        ) : error ? (
+          <Error />
+        ) : (
+          <div>
+            <h3>All address</h3>
+            <TableAddress>
+              <p>Logradouro</p>
+              <p>Numero</p>
+              <p>Complemento</p>
+              <p>Cidade</p>
+              <p>Estado</p>
+              <p>País</p>
+            </TableAddress>
+            {addressGet.map((add: any) => (
+              <ListAddress key={add.idEndereco}>
+                <h4>{add.logradouro}</h4>
+                <p>{add.numero}</p>
+                <p>{add.complemento}</p>
+                <p>{add.cidade}</p>
+                <p>{add.estado}</p>
+                <p>{add.pais}</p>
+                <Button
+                  type="button"
+                  color={"green"}
+                  onClick={() => choiceUpdateAddress(add.idEndereco)}
+                >
+                  Atualizar
+                </Button>
+                <Button
+                  type="button"
+                  color={"red"}
+                  onClick={() => deleteAddress(add.idEndereco)}
+                >
+                  Deletar
+                </Button>
+              </ListAddress>
+            ))}
+          </div>
+        )}
       </ContainerInterno>
     </Container>
   );

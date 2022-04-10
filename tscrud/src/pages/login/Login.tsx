@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Formik, Field, Form, FormikHelpers } from "formik";
 import { useContext, useEffect, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -18,8 +19,6 @@ import {
   DivEye,
 } from "./Login.styles";
 import { AuthContext } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-// import logoVemSer from "../../images/logo-vemser.png";
 
 function Login() {
   const { handleLogin } = useContext<any>(AuthContext);

@@ -1,9 +1,7 @@
+import Notiflix from 'notiflix';
 import { createContext, FC, ReactNode, useState } from "react";
 import api from "../api";
 import { UsersDTO } from "../model/UsersDTO";
-import Notiflix from 'notiflix';
-import { NewUserDTO } from "../model/NewUserDTO";
-import moment from "moment";
 
 export const UserContext = createContext({});
 

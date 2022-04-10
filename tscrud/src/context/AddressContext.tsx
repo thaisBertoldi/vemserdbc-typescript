@@ -1,5 +1,5 @@
-import { createContext, FC, ReactNode, useState } from "react";
 import Notiflix from 'notiflix';
+import { createContext, FC, ReactNode, useState } from "react";
 import api from "../api";
 import { ViaCEPDTO } from "../model/AddressDTO";
 

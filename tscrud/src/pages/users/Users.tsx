@@ -1,9 +1,9 @@
-import { useFormik } from "formik";
-import moment from "moment";
-import Notiflix from "notiflix";
-import { useContext, useEffect, useState } from "react";
-import InputMask from "react-input-mask";
 import * as Yup from "yup";
+import moment from "moment";
+import InputMask from "react-input-mask";
+import Notiflix from "notiflix";
+import { useFormik } from "formik";
+import { useContext, useEffect, useState } from "react";
 import api from "../../api";
 import Error from "../../components/error/Error";
 import Loading from "../../components/loading/Loading";
@@ -24,9 +24,10 @@ import {
 
 function Users() {
   const [idUser, setIdUser] = useState<number | null>();
-  const { user, getUsers, loading, error, deleteUser } = useContext<any>(UserContext);
+  const { user, getUsers, loading, error, deleteUser } =
+    useContext<any>(UserContext);
   const getToken = localStorage.getItem("token");
-  const [isUpdate, setIsUpdate] = useState(false)
+  const [isUpdate, setIsUpdate] = useState(false);
 
   const formatarCPF = (cpf: string) => {
     return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
@@ -57,13 +58,16 @@ function Users() {
   };
 
   async function choiceUpdateAddress(id: number) {
-    setIsUpdate(true)
+    setIsUpdate(true);
     try {
       const { data } = await api.get(`pessoa/{idPessoa}?idPessoa=${id}`);
       setIdUser(id);
       formik.setFieldValue("nome", data.nome);
       formik.setFieldValue("email", data.email);
-      formik.setFieldValue("dataNascimento", moment(data.dataNascimento, "YYYY-MM-DD").format("DD/MM/YYYY"));
+      formik.setFieldValue(
+        "dataNascimento",
+        moment(data.dataNascimento, "YYYY-MM-DD").format("DD/MM/YYYY")
+      );
       formik.setFieldValue("cpf", data.cpf);
     } catch (error) {
       console.log("Erro ao tentar acessar api endereço por id", error);
@@ -73,7 +77,9 @@ function Users() {
   const updateUser = async () => {
     const newUserData = {
       nome: formik.values.nome,
-      dataNascimento: moment(formik.values.dataNascimento, "DD/MM/YYYY").format("YYYY-MM-DD"),
+      dataNascimento: moment(formik.values.dataNascimento, "DD/MM/YYYY").format(
+        "YYYY-MM-DD"
+      ),
       email: formik.values.email,
       cpf: formik.values.cpf,
       idPessoa: idUser,
@@ -83,17 +89,13 @@ function Users() {
       Notiflix.Notify.success("Usuário atualizado com sucesso!");
       getUsers();
     } catch (error) {
-      console.log(
-        "Deu erro na hora de tentar atualizar o usuário. Afe",
-        error
-      );
+      console.log("Deu erro na hora de tentar atualizar o usuário. Afe", error);
       Notiflix.Notify.failure(
         "Sinto muito, mas nao foi possivel atualizar esse usuário."
       );
     }
-    setIsUpdate(false)
+    setIsUpdate(false);
   };
-  
 
   const formik = useFormik({
     initialValues: {
@@ -104,8 +106,12 @@ function Users() {
     },
     validationSchema: Yup.object({
       nome: Yup.string()
-        .min(2, "muito curto")
-        .max(50, "muito longo")
+        .min(
+          2,
+          "Uma vez eu chamei minha mãe de Ô e ela disse que ninguém tem um nome tão curto."
+        )
+        .max(50, "Esse é mesmo o seu nome ou você deitou no teclado?")
+        .matches(/a-z/gi, "Você precisa preencher esse campo apenas com letras")
         .required("Você precisa preencher esse campo"),
       email: Yup.string()
         .email("Este campo precisa ser preenchido com um email.")
@@ -116,9 +122,9 @@ function Users() {
       cpf: Yup.string().required("Você precisa preencher esse campo"),
     }),
     onSubmit: async (values: NewUserDTO, { resetForm }) => {
-      if(!isUpdate){
+      if (!isUpdate) {
         createUser(values);
-      }else{
+      } else {
         updateUser();
       }
       resetForm();
@@ -139,6 +145,7 @@ function Users() {
                 placeholder="Name"
                 value={formik.values.nome}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
               {formik.errors.nome && formik.touched.nome ? (
                 <AlertErrorInput>{formik.errors.nome}</AlertErrorInput>
@@ -154,6 +161,7 @@ function Users() {
                 type="email"
                 value={formik.values.email}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
               {formik.errors.email && formik.touched.email ? (
                 <AlertErrorInput>{formik.errors.email}</AlertErrorInput>
@@ -170,6 +178,7 @@ function Users() {
                 placeholder="00/00/0000"
                 value={formik.values.dataNascimento}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
               {formik.errors.dataNascimento && formik.touched.dataNascimento ? (
                 <AlertErrorInput>
@@ -188,6 +197,7 @@ function Users() {
                 placeholder="000.000.000-00"
                 value={formik.values.cpf}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
               {formik.errors.cpf && formik.touched.cpf ? (
                 <AlertErrorInput>{formik.errors.cpf}</AlertErrorInput>
@@ -196,62 +206,65 @@ function Users() {
 
             <DivLabelField>
               <DivButtons>
-              {!isUpdate && <Button type="submit" color={"#29CC97"}>
-                Cadastrar
-              </Button>}
-              {isUpdate && <Button
-                  type="submit"
-                  color={"#b4cc29"}
-                >
-                  Atualizar
-                </Button>}
-                </DivButtons>
+                {!isUpdate && (
+                  <Button type="submit" color={"#29CC97"}>
+                    Cadastrar
+                  </Button>
+                )}
+                {isUpdate && (
+                  <Button type="submit" color={"#b4cc29"}>
+                    Atualizar
+                  </Button>
+                )}
+              </DivButtons>
             </DivLabelField>
           </FormNewUser>
-
         </form>
-        {loading ? <Loading />
-        : error ? <Error /> :
-        (
-          <>    
-        <AllUsersTitle>All users</AllUsersTitle>
-          <TableUsers>
-            <p>Name User</p>
-            <p>Birthday</p>
-            <p>Cpf</p>
-            <p>Email</p>
-          </TableUsers>
-        {user.map((u: UsersDTO['users']) => (
-          <ListUsers key={u.idPessoa}>
-            <div>
-              <h4>{u.nome}</h4>
-            </div>
-            <div>
-              <p>{moment(u.dataNascimento).format("DD/MM/YYYY")}</p>
-            </div>
-            <div>
-              <p>{formatarCPF(u.cpf)}</p>
-            </div>
-            <div>
-              <p>{u.email}</p>
-            </div>
-            <Button
-              type="button"
-              color={"green"}
-              onClick={() => choiceUpdateAddress(u.idPessoa)}
-            >
-              Atualizar
-            </Button>
-            <Button
-              type="button"
-              color={"red"}
-              onClick={() => deleteUser(u.idPessoa)}
-            >
-              Deletar
-            </Button>
-          </ListUsers>
-        ))}
-        </>)}
+        {loading ? (
+          <Loading />
+        ) : error ? (
+          <Error />
+        ) : (
+          <>
+            <AllUsersTitle>All users</AllUsersTitle>
+            <TableUsers>
+              <p>Name User</p>
+              <p>Birthday</p>
+              <p>Cpf</p>
+              <p>Email</p>
+            </TableUsers>
+            {user.map((u: UsersDTO["users"]) => (
+              <ListUsers key={u.idPessoa}>
+                <div>
+                  <h4>{u.nome}</h4>
+                </div>
+                <div>
+                  <p>{moment(u.dataNascimento).format("DD/MM/YYYY")}</p>
+                </div>
+                <div>
+                  <p>{formatarCPF(u.cpf)}</p>
+                </div>
+                <div>
+                  <p>{u.email}</p>
+                </div>
+                <Button
+                  type="button"
+                  color={"green"}
+                  onClick={() => choiceUpdateAddress(u.idPessoa)}
+                >
+                  Atualizar
+                </Button>
+                <Button
+                  type="button"
+                  color={"red"}
+                  onClick={() => deleteUser(u.idPessoa)}
+                >
+                  Deletar
+                </Button>
+              </ListUsers>
+            ))}
+          </>
+        )}
       </ContainerInterno>
     </Container>
   );

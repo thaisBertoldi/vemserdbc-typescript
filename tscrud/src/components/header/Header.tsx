@@ -13,30 +13,24 @@ import Menu from "./Menu";
 function Header() {
   const { handleLogout, isToken } = useContext<any>(AuthContext);
 
-  if(isToken) {
+  if (isToken) {
     return (
-     
       <ContainerHeader>
-      
-        <div>
-          <HeaderLogo>
-            <Logo />
-          </HeaderLogo>
-          <HeaderMenu>
-            <Menu />
-          </HeaderMenu>
-          <HeaderButton>
-            <Button onClick={handleLogout} color='#3751FF'>Logout</Button>
-          </HeaderButton>
-        </div>
-      )
-    </ContainerHeader>
-  )};
-  return (
-    <header>
-      
-    </header>
-  )
+        <HeaderLogo>
+          <Logo />
+        </HeaderLogo>
+        <HeaderMenu>
+          <Menu />
+        </HeaderMenu>
+        <HeaderButton>
+          <Button onClick={handleLogout} color="#3751FF">
+            Logout
+          </Button>
+        </HeaderButton>
+      </ContainerHeader>
+    );
+  }
+  return <header></header>;
 }
 
 export default Header;

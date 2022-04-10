@@ -25,6 +25,7 @@ export const ContainerInterno = styled.div`
 
 export const Button = styled.button`
   background-color: ${(props) => props.color};
+  border-color: ${(props) => props.color};
   color: #ffffff;
   width: 100px;
   height: 35px;
