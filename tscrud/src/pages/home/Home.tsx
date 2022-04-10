@@ -1,9 +1,15 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import api from "../../api";
 import { AddressContext } from "../../context/AddressContext";
 import { UserContext } from "../../context/UserContext";
 import { Container, ContainerInterno } from "../AllPages.styles";
-import { Card, CardTitle, LinkHome, PNumber } from "./Home.styles";
+import {
+  Card,
+  CardTitle,
+  ContainerHome,
+  LinkHome,
+  PNumber,
+} from "./Home.styles";
 
 function Home() {
   const { addressGet, returnAddress } = useContext<any>(AddressContext);
@@ -21,18 +27,20 @@ function Home() {
   return (
     <Container>
       <ContainerInterno>
-        <Card>
-          <LinkHome to="/users">
-            <CardTitle>Users</CardTitle>
-            <PNumber>{usersLength.length}</PNumber>
-          </LinkHome>
-        </Card>
-        <Card>
-          <LinkHome to="/address">
-            <CardTitle>Address</CardTitle>
-            <PNumber>{addressGet.length}</PNumber>
-          </LinkHome>
-        </Card>
+        <ContainerHome>
+          <Card>
+            <LinkHome to="/users">
+              <CardTitle>Users</CardTitle>
+              <PNumber>{usersLength.length}</PNumber>
+            </LinkHome>
+          </Card>
+          <Card>
+            <LinkHome to="/address">
+              <CardTitle>Address</CardTitle>
+              <PNumber>{addressGet.length}</PNumber>
+            </LinkHome>
+          </Card>
+        </ContainerHome>
       </ContainerInterno>
     </Container>
   );

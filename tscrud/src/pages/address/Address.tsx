@@ -24,6 +24,7 @@ function Address() {
     useContext<any>(AddressContext);
 
   const [idAddress, setIdAddress] = useState<number | null>();
+  const [isUpdate, setIsUpdate] = useState(false)
 
   const getToken = localStorage.getItem("token");
 
@@ -51,6 +52,7 @@ function Address() {
   }
 
   async function choiceUpdateAddress(id: number) {
+    setIsUpdate(true)
     try {
       const { data } = await api.get(`endereco/${id}`);
       setIdAddress(id);
@@ -92,6 +94,7 @@ function Address() {
         "Sinto muito, mas nao foi possivel atualizar esse endereço."
       );
     }
+    setIsUpdate(false)
   }
 
   const formik = useFormik({
@@ -297,16 +300,16 @@ function Address() {
 
             <FormAddress>
               <LabelInput>
-                <Button type="submit" color={"#29CC97"}>
+                {!isUpdate && <Button type="submit" color={"#29CC97"}>
                   Cadastrar
-                </Button>
-                <Button
+                </Button>}
+                {isUpdate && <Button
                   type="button"
                   color={"#b4cc29"}
                   onClick={() => updateAddress()}
                 >
                   Atualizar
-                </Button>
+                </Button>}
               </LabelInput>
             </FormAddress>
           </AllFormAddress>

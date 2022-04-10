@@ -26,6 +26,7 @@ function Users() {
   const [idUser, setIdUser] = useState<number | null>();
   const { user, getUsers, loading, error, deleteUser } = useContext<any>(UserContext);
   const getToken = localStorage.getItem("token");
+  const [isUpdate, setIsUpdate] = useState(false)
 
   const formatarCPF = (cpf: string) => {
     return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
@@ -56,6 +57,7 @@ function Users() {
   };
 
   async function choiceUpdateAddress(id: number) {
+    setIsUpdate(true)
     try {
       const { data } = await api.get(`pessoa/{idPessoa}?idPessoa=${id}`);
       setIdUser(id);
@@ -89,6 +91,7 @@ function Users() {
         "Sinto muito, mas nao foi possivel atualizar esse usuário."
       );
     }
+    setIsUpdate(false)
   };
   
 
@@ -188,16 +191,16 @@ function Users() {
 
             <DivLabelField>
               <DivButtons>
-              <Button type="submit" color={"#29CC97"}>
+              {!isUpdate && <Button type="submit" color={"#29CC97"}>
                 Cadastrar
-              </Button>
-              <Button
+              </Button>}
+              {isUpdate && <Button
                   type="button"
                   color={"#b4cc29"}
                   onClick={() => updateUser()}
                 >
                   Atualizar
-                </Button>
+                </Button>}
                 </DivButtons>
             </DivLabelField>
           </FormNewUser>

@@ -28,3 +28,9 @@ export const PNumber = styled.h2`
 export const LinkHome = styled(Link)`
     text-decoration: none;
 `;
+
+export const ContainerHome = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
