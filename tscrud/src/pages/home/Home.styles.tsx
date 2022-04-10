@@ -32,5 +32,6 @@ export const LinkHome = styled(Link)`
 export const ContainerHome = styled.div`
     display: flex;
     align-items: center;
+    gap: 15px;
     justify-content: center;
 `;
